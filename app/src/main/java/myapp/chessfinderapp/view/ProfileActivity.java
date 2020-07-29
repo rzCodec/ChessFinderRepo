@@ -5,12 +5,15 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Button;
 import android.widget.Toast;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -66,35 +69,48 @@ public class ProfileActivity extends AppCompatActivity implements LifecycleOwner
 
         //Setup the xml file and assign it to a variable
 		LayoutInflater layoutInflater = LayoutInflater.from(ProfileActivity.this);
-        View customView = layoutInflater.inflate(R.layout.custom_edit_profile_options, null);
+        final View customView = layoutInflater.inflate(R.layout.custom_edit_profile_options, null);
         //Using the custom view, find the components like edit texts, button, etc
 
 		//Get the edit text view components 
-		// final EditText edt_EloRating = customView.findViewById(R.id.);
-		// final EditText edt_Wins = customView.findViewById(R.id.);
-		// final EditText edt_Loses = customView.findViewById(R.id.);
+		final EditText edt_EloRating = customView.findViewById(R.id.editTextEloRating);
+		final EditText edt_Wins = customView.findViewById(R.id.editTextWins);
+		final EditText edt_Loses = customView.findViewById(R.id.editTextLoses);
+		final Button btnUpdateProfile = findViewById(R.id.btnUpdateProfile);
 		
-		//edt_EloRating.setText(chessData.getiEloRating());
-		//edt_Wins.setText(chessData.getWins());
-		//edt_Loses.setText(chessData.getLoses));
-		String email = chessUser.getEmail();
+		edt_EloRating.setText(chessData.getiEloRating());
+		edt_Wins.setText(chessData.getWins());
+		edt_Loses.setText(chessData.getLoses());
+		final String email = chessUser.getEmail();
+
+		profileActivityViewModel.returnServerResponse().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                Toast.makeText(ProfileActivity.this, s, Toast.LENGTH_LONG).show();					
+			}   
+        });
+		
+		btnUpdateProfile.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view){
 
         //Create custom dialog and set it to the customView variable
         AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
         builder.setTitle("Edit Profile Information");
         builder.setView(customView);
+		
+	
 
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 //Get the data from the components here
                 //Pass the data using the MVVM architecture
-				/*
 				String newEloRating = edt_EloRating.getText().toString();
 				String newWins = edt_Wins.getText().toString();
 				String newLoses = edt_Loses.getText().toString(); 
 				profileActivityViewModel.updateProfileDetails(newEloRating, newWins, newLoses, email);
-				*/
+		
             }
         });
 
@@ -104,5 +120,8 @@ public class ProfileActivity extends AppCompatActivity implements LifecycleOwner
 
             }
         });
-    }
+				
+			}
+		});
+		    }
 }

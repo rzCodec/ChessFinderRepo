@@ -16,8 +16,7 @@ public class ProfileActivityViewModel extends ViewModel {
         api_repository.updateProfileDetails(EloRating, Wins, Loses, email);
     }
 
-    /*
     public LiveData<String> returnServerResponse() {
-
-    }*/
+		return api_repository.getUpdateProfileResponse();
+    }
 }
