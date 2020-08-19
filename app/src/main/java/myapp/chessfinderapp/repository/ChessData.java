@@ -15,11 +15,19 @@ public class ChessData implements Parcelable {
 
     @SerializedName("loses")
     private String loses;
+	
+	@SerializedName("draws")
+	private String draws;
+	
+	@SerializedName("profile_description")
+	private String profile_description;
 
-    public ChessData(String iEloRating, String wins, String loses) {
+    public ChessData(String iEloRating, String wins, String loses, String draws, String profile_description) {
         this.iEloRating = iEloRating;
         this.wins = wins;
         this.loses = loses;
+		this.draws = draws;
+		this.profile_description = profile_description;
     }
 
     public String getiEloRating() {
@@ -45,6 +53,22 @@ public class ChessData implements Parcelable {
     public void setLoses(String loses) {
         this.loses = loses;
     }
+	
+	public void setDraws(String draws) {
+		this.draws = draws;
+	}
+	
+	public String getDraws() {
+		return this.draws;
+	}
+	
+	public void setProfileDescription(String desc) {
+		this.profile_description = desc;
+	}
+	
+	public String getProfileDescription() {
+		return this.profile_description;
+	}
 	
 	//==========
 	

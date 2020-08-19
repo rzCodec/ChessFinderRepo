@@ -1,7 +1,8 @@
 package myapp.chessfinderapp.repository;
 
 import androidx.lifecycle.MutableLiveData;
-import com.google.gson.Gson;
+import com.google.gson.Gson; 
+//Use Gson to map JSON Object values onto Java attributes and create objects automatically
 import org.json.JSONObject;
 import java.util.HashMap;
 import retrofit2.Call;
@@ -19,6 +20,7 @@ public class API_Repository {
     private Call<JSONObject> logoutCall; 
 	private Call<JSONObject> registerCall;
 	private Call<String> updateProfileCall;
+	private Call<ChessUser> getChessUserCall;
     
     private static final String USER_EMAIL = "user_email";
     private static final String USERNAME = "username";
@@ -56,6 +58,7 @@ public class API_Repository {
         loginCall.clone().enqueue(new Callback<ChessUser>() {
             @Override
             public void onResponse(Call<ChessUser> call, Response<ChessUser> response) {
+				//Get the other inner object and convert the object to a string
 				ChessData chessData = response.body().getChessData();
 				Gson gson = new Gson();
 				String str_chessData = gson.toJson(chessData);
@@ -138,11 +141,14 @@ public class API_Repository {
         });
     }
 
-    public void updateProfileDetails(String EloRating, String Wins, String Loses, String email) {
+    public void updateProfileDetails(String EloRating, String Wins, String Loses, String email, 
+	       String Draws, String profileDescription) {
         HashMap<String, String> map = new HashMap<>();
-        map.put("ELO_RATING", EloRating);
-        map.put("WINS", Wins);
-        map.put("LOSES", Loses);
+        map.put("elo", EloRating);
+        map.put("wins", Wins);
+        map.put("loses", Loses);
+		map.put("draws", Draws);
+		map.put("profile_description", profileDescription);
 		map.put(USER_EMAIL, email);
 
         updateProfileCall = api.update_profile(map);
@@ -159,6 +165,25 @@ public class API_Repository {
             }
         });
     }
+	
+	public void getChessUser(String email) {
+		HashMap<String, String> map = new HashMap<>();
+		map.put("user_email", email);
+		
+		getChessUserCall = api.getChessUser(map);
+		getChessUserCall.enqueue(new Callback<ChessUser>() {
+            @Override
+            public void onResponse(Call<ChessUser> call, Response<ChessUser> response) {
+				//Get the other inner object and convert the object to a string
+                live_chess_user.setValue(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<ChessUser> call, Throwable t) {
+				live_chess_user.setValue(null);                  
+            }
+        });
+	}
 
     public MutableLiveData<ChessUser> getLiveChessuser() {
         return live_chess_user;

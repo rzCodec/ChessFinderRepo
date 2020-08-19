@@ -145,7 +145,8 @@ public class HomeActivity extends AppCompatActivity
             Intent i = new Intent(HomeActivity.this, ProfileActivity.class);
             //i.putExtra("ChessUser", chessUser);
 			//Converts the java object into a string
-            i.putExtra("ChessUser", new Gson().toJson(chessUser));
+            //i.putExtra("ChessUser", new Gson().toJson(chessUser));
+			i.putExtra("Email", chessUser.getEmail());
 			startActivity(i);
 
         }

@@ -8,7 +8,7 @@ import android.widget.TextView;
 import android.widget.Button;
 import android.widget.Toast;
 import android.widget.EditText;
-
+import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
@@ -48,47 +48,74 @@ public class ProfileActivity extends AppCompatActivity implements LifecycleOwner
 		ChessUser chessUser = new Gson().fromJson(strChessUser, ChessUser.class);*/
 		
 		//Get the object which is in string form...
-		String target = getIntent().getStringExtra("ChessUser");
+		//String target = getIntent().getStringExtra("ChessUser");
 		//...and convert it back to a java object.
 		// When there is composition, using Gson to convert objects stored as strings works well.
-		ChessUser chessUser = new Gson().fromJson(target, ChessUser.class);
+		//ChessUser chessUser = new Gson().fromJson(target, ChessUser.class);
 		
-		Toast.makeText(this, "Welcome " + chessUser.getEmail() + "!", Toast.LENGTH_LONG).show();
-        TextView textViewTempData = findViewById(R.id.txtChessRating);
-        TextView textViewChessWins = findViewById(R.id.txtWins);
-        TextView textViewChessLoses = findViewById(R.id.txtLoses);
+		//Toast.makeText(this, "Welcome " + chessUser.getEmail() + "!", Toast.LENGTH_LONG).show();
+        
+		final TextView textViewTempData = findViewById(R.id.txtChessRating);
+        final TextView textViewChessWins = findViewById(R.id.txtWins);
+        final TextView textViewChessLoses = findViewById(R.id.txtLoses);
+		final TextView textViewChessDraws = findViewById(R.id.txtDraws);
+		final TextView textViewChessProfileDescription = findViewById(R.id.txtProfileDescription);
 
 		//There is another object in the object, (composition) so using Gson is appropriate
 		//Using parcelable does not seem to work, hence I am using a Gson conversion.
-		ChessData chessData = new Gson().fromJson(chessUser.get_chessDataObjectAsString(), ChessData.class);
+		
+		//ChessData chessData = new Gson().fromJson(chessUser.get_chessDataObjectAsString(), ChessData.class);
+		
+		/*
+		textViewChessProfileDescription.setText("Profile Description " + chessData.getProfileDescription());
 		textViewTempData.setText("Elo Rating: " + chessData.getiEloRating());
 		textViewChessWins.setText("Wins: " + chessData.getWins());
 		textViewChessLoses.setText("Loses: " + chessData.getLoses());
+		textViewChessDraws.setText("Draws: " + chessData.getDraws());
 		//textViewTempData.setText(chessUser.get_chessDataObjectAsString());
-
-
+		*/
+		
+			Intent i = getIntent();
+		final String email = i.getStringExtra("Email");
+		
+		profileActivityViewModel.returnChessUserData().observe(this, new Observer<ChessUser>() {
+            @Override
+            public void onChanged(ChessUser chessUser) {
+                ChessData chessData = chessUser.getChessData();
+				textViewChessProfileDescription.setText("Profile Description " + chessData.getProfileDescription());
+				textViewTempData.setText("Elo Rating: " + chessData.getiEloRating());
+				textViewChessWins.setText("Wins: " + chessData.getWins());
+				textViewChessLoses.setText("Loses: " + chessData.getLoses());
+				textViewChessDraws.setText("Draws: " + chessData.getDraws());
+				//disable progress bar here
+				
         //Setup the xml file and assign it to a variable
 		LayoutInflater layoutInflater = LayoutInflater.from(ProfileActivity.this);
         final View customView = layoutInflater.inflate(R.layout.custom_edit_profile_options, null);
         //Using the custom view, find the components like edit texts, button, etc
 
 		//Get the edit text view components 
+		final EditText edt_ProfileDesc = customView.findViewById(R.id.editTextProfileDescription);
 		final EditText edt_EloRating = customView.findViewById(R.id.editTextEloRating);
 		final EditText edt_Wins = customView.findViewById(R.id.editTextWins);
 		final EditText edt_Loses = customView.findViewById(R.id.editTextLoses);
+		final EditText edt_Draws = customView.findViewById(R.id.editTextDraws);
 		final Button btnUpdateProfile = findViewById(R.id.btnUpdateProfile);
 		
 		edt_EloRating.setText(chessData.getiEloRating());
 		edt_Wins.setText(chessData.getWins());
 		edt_Loses.setText(chessData.getLoses());
-		final String email = chessUser.getEmail();
+		edt_Draws.setText(chessData.getDraws());
+		edt_ProfileDesc.setText(chessData.getProfileDescription());
+		//final String email = chessUser.getEmail();
 
+		/*
 		profileActivityViewModel.returnServerResponse().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
                 Toast.makeText(ProfileActivity.this, s, Toast.LENGTH_LONG).show();					
 			}   
-        });
+        });*/
 		
 		btnUpdateProfile.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -99,8 +126,6 @@ public class ProfileActivity extends AppCompatActivity implements LifecycleOwner
         builder.setTitle("Edit Profile Information");
         builder.setView(customView);
 		
-	
-
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -109,9 +134,11 @@ public class ProfileActivity extends AppCompatActivity implements LifecycleOwner
 				String newEloRating = edt_EloRating.getText().toString();
 				String newWins = edt_Wins.getText().toString();
 				String newLoses = edt_Loses.getText().toString(); 
-				profileActivityViewModel.updateProfileDetails(newEloRating, newWins, newLoses, email);
-		
-            }
+				String draws = edt_Draws.getText().toString();
+				String profileDesc = edt_ProfileDesc.getText().toString();
+				profileActivityViewModel.updateProfileDetails(newEloRating, newWins, newLoses, email, draws, profileDesc);
+                //enable progress bar here
+			}
         });
 
         builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
@@ -121,7 +148,17 @@ public class ProfileActivity extends AppCompatActivity implements LifecycleOwner
             }
         });
 				
+			AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+			
 			}
 		});
-		    }
-}
+			}   
+        });
+		
+	
+		profileActivityViewModel.getChessUserData(email);
+		
+
+    }//end of onCreate
+}//end of class

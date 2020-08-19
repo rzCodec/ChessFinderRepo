@@ -6,8 +6,9 @@
     android:layout_width="match_parent"
 	android:layout_height="wrap_content">
 	
+	
 	 <EditText
-        android:id="@+id/editTextEloRating"
+        android:id="@+id/editTextProfileDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
@@ -17,7 +18,19 @@
         app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"/>
+
+	<EditText
+		android:id="@+id/editTextEloRating"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginLeft="8dp"
+		android:layout_marginTop="16dp"
+		android:layout_marginRight="8dp"
+		android:ems="10"
+		app:layout_constraintLeft_toLeftOf="parent"
+		app:layout_constraintRight_toRightOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/editTextProfileDescription" />
 
     <EditText
         android:id="@+id/editTextWins"
@@ -42,5 +55,18 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextWins" />
+		
+		
+	<EditText
+        android:id="@+id/editTextDraws"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextLoses" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
